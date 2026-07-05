@@ -1,0 +1,42 @@
+name: eksworkflow
+on: 
+  push:
+    branches: [master]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  cicd_job:
+    name: build and deploy to eks
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials with GitHub OIDC
+      uses: aws-actions/configure-aws-credentials@v6.1.0
+      with:
+        aws-region: us-west-2
+        role-to-assume: arn:aws:iam::605199373262:role/githubactions_role
+        role-session-name: githubactions_role-${{ github.run_id }}
+
+
+    - name: Test AWS connection
+      run: aws sts get-caller-identity
+
+    - name: login to ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      
+    - name: build, tag, push docker image to ECR
+      env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: myapps/pacman
+          IMAGE_TAG: ${{ github.sha }}
+          
+      run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./docker
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
