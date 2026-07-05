@@ -1,7 +1,9 @@
 name: eksworkflow
-on: 
+
+on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 permissions:
   id-token: write
@@ -9,47 +11,53 @@ permissions:
 
 jobs:
   cicd_job:
-    name: build and deploy to eks
     runs-on: ubuntu-latest
 
+    env:
+      IMAGE_TAG: ${{ github.sha }}
+
     steps:
-    - name: checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Configure AWS credentials with GitHub OIDC
-      uses: aws-actions/configure-aws-credentials@v6.1.0
-      with:
-        aws-region: us-west-2
-        role-to-assume: arn:aws:iam::605199373262:role/githubactions_role
-        role-session-name: githubactions_role-${{ github.run_id }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          aws-region: us-west-2
+          role-to-assume: arn:aws:iam::605199373262:role/githubactions_role
+          role-session-name: githubactions_role-${{ github.run_id }}
 
+      - name: Test AWS connection
+        run: aws sts get-caller-identity
 
-    - name: Test AWS connection
-      run: aws sts get-caller-identity
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
 
-    - name: login to ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
-      env:
-       IMAGE_TAG: ${{ github.sha }}
-      
-    - name: Build Docker Image
-      run: |
+      - name: Build Docker image
+        run: |
           docker build -t myapps/namegen:$IMAGE_TAG .
 
-    - name: tag Docker Image
-      run: |
-        docker tag myapps/namegen:$IMAGE_TAG \605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:$IMAGE_TAG
+      - name: Tag Docker image
+        run: |
+          docker tag myapps/namegen:$IMAGE_TAG \
+          605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:$IMAGE_TAG
 
-    - name: Push Docker Image
-      run: |
-        docker push \605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:$IMAGE_TAG
-          
-    - name: Update Kubernetes
-      run: |
-          kubectl set image deployment/namegen \namegen=605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:$IMAGE_TAG
+      - name: Push Docker image
+        run: |
+          docker push \
+          605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:$IMAGE_TAG
 
-    - name: Restart Deployment
-      run: |
-          kubectl rollout restart deployment/namegen
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --name devops-final \
+            --region us-west-2
+
+      - name: Update deployment image
+        run: |
+          kubectl set image deployment/namegen \
+            namegen=605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:$IMAGE_TAG
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/namegen --timeout=300s
