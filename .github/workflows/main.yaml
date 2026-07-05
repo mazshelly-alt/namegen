@@ -53,10 +53,9 @@ jobs:
             --name namegen \
             --region us-west-2
 
-      - name: Update deployment image
+      - name: deploy to EKS
         run: |
-          kubectl set image deployment/namegen \
-            namegen=605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:$IMAGE_TAG
+          kubectl apply -f ./K8S/namegen-deployment-eks.yaml
 
       - name: Wait for rollout
         run: |
