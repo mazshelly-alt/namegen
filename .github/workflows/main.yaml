@@ -50,7 +50,7 @@ jobs:
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig \
-            --name devops-final \
+            --name namegen \
             --region us-west-2
 
       - name: Update deployment image
