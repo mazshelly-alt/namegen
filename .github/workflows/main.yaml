@@ -30,18 +30,25 @@ jobs:
     - name: login to ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
+
+      env:
+       IMAGE_TAG: ${{ github.sha }}
       
     - name: Build Docker Image
       run: |
-          docker build -t myapps/namegen .
-          docker tag myapps/namegen:latest 605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:latest
+          docker build -t myapps/namegen:$IMAGE_TAG .
+
+    - name: tag Docker Image
+      run: |
+        docker tag myapps/namegen:$IMAGE_TAG \605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:$IMAGE_TAG
 
     - name: Push Docker Image
       run: |
-          docker push 605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:latest
-    - name: Update kubeconfig
+        docker push \605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:$IMAGE_TAG
+          
+    - name: Update Kubernetes
       run: |
-          aws eks update-kubeconfig --name devops-final --region eu-central-1
+          kubectl set image deployment/namegen \namegen=605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:$IMAGE_TAG
 
     - name: Restart Deployment
       run: |
