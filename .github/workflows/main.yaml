@@ -39,4 +39,10 @@ jobs:
     - name: Push Docker Image
       run: |
           docker push 605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:latest
+    - name: Update kubeconfig
+      run: |
+          aws eks update-kubeconfig --name devops-final --region eu-central-1
 
+    - name: Restart Deployment
+      run: |
+          kubectl rollout restart deployment/namegen
