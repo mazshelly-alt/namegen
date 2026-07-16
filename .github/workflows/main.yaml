@@ -1,8 +1,8 @@
-name: eksworkflow
+#name: eksworkflow
 
-on:
-  push:
-    branches:
+#on:
+#  push:
+ #   branches:
       - main
 
 permissions:
