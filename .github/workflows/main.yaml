@@ -50,8 +50,17 @@ jobs:
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig \
-            --name namegen \
-            --region us-west-2
+          --name namegen \
+          --region us-west-2
+
+          kubectl config current-context
+          kubectl config get-contexts
+
+      - name: Test Kubernetes access
+        run: |
+          kubectl version --client
+          kubectl cluster-info
+          kubectl get nodes
 
       - name: deploy to EKS
         run: |
