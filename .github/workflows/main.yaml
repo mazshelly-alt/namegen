@@ -62,6 +62,14 @@ jobs:
           kubectl auth can-i create service -n default
           kubectl auth can-i create configmap -n default
 
+      - name: Update deployment image
+        run: |
+            sed -i "s|IMAGE_TAG|${IMAGE_TAG}|g" K8S/namegen-deployment.yaml
+
+      - name: Deploy
+        run: |
+            kubectl apply -f K8S/namegen-deployment.yaml
+
       - name: deploy to EKS
         run: |
           kubectl apply -f ./K8S/namegen-deployment.yaml
