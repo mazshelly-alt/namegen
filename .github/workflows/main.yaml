@@ -58,9 +58,9 @@ jobs:
 
       - name: Test Kubernetes access
         run: |
-          kubectl version --client
-          kubectl cluster-info
-          kubectl get nodes
+          kubectl auth can-i create deployment -n default
+          kubectl auth can-i create service -n default
+          kubectl auth can-i create configmap -n default
 
       - name: deploy to EKS
         run: |
