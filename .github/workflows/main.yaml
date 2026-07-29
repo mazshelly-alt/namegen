@@ -55,7 +55,7 @@ jobs:
 
       - name: deploy to EKS
         run: |
-          kubectl apply -f ./K8S/namegen-deployment-eks.yaml
+          kubectl apply -f ./K8S/namegen-deployment.yaml
 
       - name: Wait for rollout
         run: |
