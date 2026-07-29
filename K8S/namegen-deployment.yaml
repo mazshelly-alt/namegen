@@ -22,17 +22,6 @@ spec:
 
         image: 605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:latest
 
-        - name: Tag latest
-          run: |
-            docker tag \
-            myapps/namegen:${IMAGE_TAG} \
-            605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:latest
-
-        - name: Push latest
-          run: |
-            docker push \
-            605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:latest
-
         ports:
         - containerPort: 8080
 
