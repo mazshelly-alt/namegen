@@ -1,8 +1,8 @@
-#name: eksworkflow
+name: eksworkflow
 
-#on:
-#  push:
- #   branches:
+on:
+  push:
+    branches:
       - main
 
 permissions:
@@ -25,7 +25,7 @@ jobs:
         with:
           aws-region: us-west-2
           role-to-assume: arn:aws:iam::605199373262:role/githubactions_role
-          role-session-name: githubactions_role-${{ github.run_id }}
+          role-session-name: GitHub_OIDC_role-${{ github.run_id }}
 
       - name: Test AWS connection
         run: aws sts get-caller-identity
