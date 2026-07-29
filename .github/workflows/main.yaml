@@ -66,6 +66,15 @@ jobs:
         run: |
           kubectl apply -f ./K8S/namegen-deployment.yaml
 
+      - name: Describe failed pods
+        if: always()
+        run: |
+          for pod in $(kubectl get pods -o name); do
+          echo "==== $pod ===="
+          kubectl describe $pod
+          kubectl logs $pod --all-containers=true || true
+          done
+
       - name: Wait for rollout
         run: |
           kubectl rollout status deployment/namegen --timeout=300s
