@@ -91,6 +91,16 @@ jobs:
         run: |
           kubectl rollout restart deployment/namegen
 
+      - name: Debug pods
+        if: always()
+        run: |
+           for pod in $(kubectl get pods -o name); do
+             echo "==== $pod ===="
+             kubectl describe "$pod" || true
+             kubectl logs "$pod" --all-containers=true || true
+           done
+
       - name: Wait for rollout
         run: |
           kubectl rollout status deployment/namegen --timeout=300s
+        
