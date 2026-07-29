@@ -1,8 +1,8 @@
-#name: eksworkflow
+name: eksworkflow
 
-#on:
-  #push:
-    #branches:
+on:
+  push:
+    branches:
       - main
 
 permissions:
@@ -24,7 +24,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
           aws-region: us-west-2
-          role-to-assume: arn:aws:iam::605199373262:role/githubactions_role
+          role-to-assume: arn:aws:iam::605199373262:role/GitHub_OIDC_role
           role-session-name: GitHub_OIDC_role-${{ github.run_id }}
 
       - name: Test AWS connection
