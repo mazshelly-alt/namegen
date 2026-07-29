@@ -19,8 +19,7 @@ spec:
     spec:
       containers:
       - name: namegen
-
-        image: 605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:latest
+        image: 605199373262.dkr.ecr.us-west-2.amazonaws.com/myapps/namegen:IMAGE_TAG
 
         ports:
         - containerPort: 8080
