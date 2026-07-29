@@ -87,6 +87,10 @@ jobs:
           kubectl logs $pod --all-containers=true || true
           done
 
+      - name: Restart deployment
+        run: |
+          kubectl rollout restart deployment/namegen
+
       - name: Wait for rollout
         run: |
           kubectl rollout status deployment/namegen --timeout=300s
