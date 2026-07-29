@@ -25,5 +25,5 @@ spec:
         - containerPort: 8080
 
         env:
-        - name: MONGO_URL
+        - name: MONGODB_URL
           value: mongodb://mongodb:27017/names
