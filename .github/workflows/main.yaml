@@ -76,6 +76,9 @@ jobs:
 
       - name: Deploy to EKS
         run: |
+          kubectl apply -f K8S/mongodb-service.yaml
+          kubectl apply -f K8S/mongodb-statefulset.yaml
+          kubectl apply -f K8S/namegen-service.yaml
           kubectl apply -f K8S/namegen-deployment.yaml
 
       - name: Describe failed pods
