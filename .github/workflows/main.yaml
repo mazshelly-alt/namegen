@@ -74,6 +74,10 @@ jobs:
         run: |
           sed -i "s|IMAGE_TAG|${IMAGE_TAG}|g" K8S/namegen-deployment.yaml
 
+      - name: Create Auto Mode StorageClass
+        run: |
+          kubectl apply -f K8S/auto-ebs-storageclass.yaml
+
       - name: Deploy to EKS
         run: |
           kubectl apply -f K8S/mongodb-service.yaml
