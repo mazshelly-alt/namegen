@@ -33,7 +33,7 @@ spec:
   - metadata:
       name: mongo-storage
     spec:
-      storageClassName: gp2
+      storageClassName: auto-ebs  
       accessModes:
       - ReadWriteOnce
       volumeMode: Filesystem
