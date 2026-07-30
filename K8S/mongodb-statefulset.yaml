@@ -30,12 +30,13 @@ spec:
           name: mongo-storage
 
   volumeClaimTemplates:
-- metadata:
-    name: mongo-storage
-  spec:
-    accessModes:
+  - metadata:
+      name: mongo-storage
+    spec:
+      storageClassName: gp2
+      accessModes:
       - ReadWriteOnce
-    storageClassName: gp2
-    resources:
-      requests:
-        storage: 10Gi
+      volumeMode: Filesystem
+      resources:
+        requests:
+          storage: 10Gi
