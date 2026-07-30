@@ -80,6 +80,7 @@ jobs:
           kubectl apply -f K8S/mongodb-statefulset.yaml
           kubectl apply -f K8S/namegen-service.yaml
           kubectl apply -f K8S/namegen-deployment.yaml
+          kubectl apply -f auto-ebs.yaml
 
       - name: Describe failed pods
         if: always()
