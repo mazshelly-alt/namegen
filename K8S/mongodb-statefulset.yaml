@@ -29,14 +29,13 @@ spec:
         - mountPath: /data/db
           name: mongo-storage
 
-  volumeClaimTemplates:
-  - metadata:
-      name: mongo-storage
-
-    spec:
-      accessModes:
+volumeClaimTemplates:
+- metadata:
+    name: mongo-storage
+  spec:
+    storageClassName: gp2
+    accessModes:
       - ReadWriteOnce
-
-      resources:
-        requests:
-          storage: 10Gi
+    resources:
+      requests:
+        storage: 10Gi
